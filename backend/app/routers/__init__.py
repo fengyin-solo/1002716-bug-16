@@ -26,5 +26,6 @@ from app.routers import oog as router_oog
 from app.routers import emptystack as router_emptystack
 from app.routers import energy as router_energy
 from app.routers import safetycheck as router_safetycheck
+from app.routers import packinglist as router_packinglist
 
-ROUTERS = [router_berth, router_vessel, router_quaycrane, router_yardplan, router_rtg, router_truck, router_container, router_gate, router_dangerous, router_coldchain, router_lashing, router_shift, router_repair, router_tally, router_customs, router_feeder, router_oog, router_emptystack, router_energy, router_safetycheck]
+ROUTERS = [router_berth, router_vessel, router_quaycrane, router_yardplan, router_rtg, router_truck, router_container, router_gate, router_dangerous, router_coldchain, router_lashing, router_shift, router_repair, router_tally, router_customs, router_feeder, router_oog, router_emptystack, router_energy, router_safetycheck, router_packinglist]

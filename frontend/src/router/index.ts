@@ -21,6 +21,7 @@ const Oog = () => import('@/views/oog/index.vue')
 const Emptystack = () => import('@/views/emptystack/index.vue')
 const Energy = () => import('@/views/energy/index.vue')
 const Safetycheck = () => import('@/views/safetycheck/index.vue')
+const Packinglist = () => import('@/views/packinglist/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -46,6 +47,7 @@ const router = createRouter({
     { path: '/emptystack', name: 'emptystack', component: Emptystack },
     { path: '/energy', name: 'energy', component: Energy },
     { path: '/safetycheck', name: 'safetycheck', component: Safetycheck },
+    { path: '/packinglist', name: 'packinglist', component: Packinglist },
   ],
 })
 
