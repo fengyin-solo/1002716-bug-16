@@ -12,6 +12,25 @@
         <strong class="stat-value">{{ card.value }}</strong>
       </article>
     </div>
+
+    <h3 style="margin: 16px 0 8px">箱单对账合计（随已导入箱单实时重算）</h3>
+    <div class="stat-row">
+      <article v-for="card in reconcileCards" :key="card.label" class="stat-card">
+        <span class="stat-label">{{ card.label }}</span>
+        <strong class="stat-value">{{ card.value }}</strong>
+      </article>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>箱状态</th><th>箱量</th></tr>
+      </thead>
+      <tbody>
+        <tr v-for="(count, status) in reconciliation?.by_status ?? {}" :key="status">
+          <td>{{ status }}</td>
+          <td>{{ count }}</td>
+        </tr>
+      </tbody>
+    </table>
     <table class="data-table">
       <thead>
         <tr><th>业务模块</th><th>今日新增</th><th>待处理</th><th>异常量</th></tr>
@@ -29,9 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 
 import { fetchJson } from '@/api/client'
+import { fetchReconciliation, type Reconciliation } from '@/api/manifest'
 
 type Overview = {
   cards: { label: string; value: number }[]
@@ -40,15 +60,29 @@ type Overview = {
 
 const cards = ref<Overview['cards']>([])
 const moduleRows = ref<Overview['modules']>([])
+const reconciliation = ref<Reconciliation | null>(null)
+
+const reconcileCards = computed(() => {
+  const rec = reconciliation.value
+  return [
+    { label: '箱单批次', value: rec?.batch_count ?? 0 },
+    { label: '归并后总箱量', value: rec?.box_count ?? 0 },
+    { label: '毛重合计', value: rec?.gross_total ?? 0 },
+    { label: '净重合计', value: rec?.net_total ?? 0 },
+  ]
+})
 
 onMounted(async () => {
-  try {
-    const payload = await fetchJson<Overview>('/api/overview')
-    cards.value = payload.cards
-    moduleRows.value = payload.modules
-  } catch {
+  const [overview, rec] = await Promise.all([
+    fetchJson<Overview>('/api/overview').catch(() => null),
+    fetchReconciliation().catch(() => null),
+  ])
+  if (overview) {
+    cards.value = overview.cards
+    moduleRows.value = overview.modules
+  } else {
     cards.value = [{"label": "业务模块", "value": 0}, {"label": "今日新增", "value": 0}]
-    moduleRows.value = [{"name": "泊位计划", "created": 0, "pending": 0, "abnormal": 0}, {"name": "船舶作业", "created": 0, "pending": 0, "abnormal": 0}, {"name": "岸桥调度", "created": 0, "pending": 0, "abnormal": 0}, {"name": "堆场策划", "created": 0, "pending": 0, "abnormal": 0}, {"name": "场桥调度", "created": 0, "pending": 0, "abnormal": 0}, {"name": "内集卡调度", "created": 0, "pending": 0, "abnormal": 0}, {"name": "集装箱信息", "created": 0, "pending": 0, "abnormal": 0}, {"name": "闸口管理", "created": 0, "pending": 0, "abnormal": 0}, {"name": "危险品申报", "created": 0, "pending": 0, "abnormal": 0}, {"name": "冷藏箱监控", "created": 0, "pending": 0, "abnormal": 0}, {"name": "绑扎加固", "created": 0, "pending": 0, "abnormal": 0}, {"name": "工班管理", "created": 0, "pending": 0, "abnormal": 0}, {"name": "箱体修洗", "created": 0, "pending": 0, "abnormal": 0}, {"name": "理货记录", "created": 0, "pending": 0, "abnormal": 0}, {"name": "海关查验", "created": 0, "pending": 0, "abnormal": 0}, {"name": "支线驳船", "created": 0, "pending": 0, "abnormal": 0}, {"name": "超限箱管理", "created": 0, "pending": 0, "abnormal": 0}, {"name": "空箱堆存", "created": 0, "pending": 0, "abnormal": 0}, {"name": "能耗监测", "created": 0, "pending": 0, "abnormal": 0}, {"name": "安全巡检", "created": 0, "pending": 0, "abnormal": 0}]
   }
+  reconciliation.value = rec
 })
 </script>

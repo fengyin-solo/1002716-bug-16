@@ -28,6 +28,20 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class ManifestImportPayload(BaseModel):
+    """一次箱单导出结果：批次号 + 表头 + 数据行（行按表头名称归位）。"""
+
+    batch_no: str
+    columns: list[str] = Field(default_factory=list)
+    rows: list[list[Any]] = Field(default_factory=list)
+
+
+class ManifestExportQuery(BaseModel):
+    """出单时当前勾选的箱状态；不勾视为全部状态。"""
+
+    statuses: list[str] = Field(default_factory=list)
+
+
 
 class BerthEntry(BaseModel):
     """泊位明细结构。"""

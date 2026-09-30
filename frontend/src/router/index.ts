@@ -8,6 +8,8 @@ const Yardplan = () => import('@/views/yardplan/index.vue')
 const Rtg = () => import('@/views/rtg/index.vue')
 const Truck = () => import('@/views/truck/index.vue')
 const Container = () => import('@/views/container/index.vue')
+const Manifest = () => import('@/views/manifest/index.vue')
+const ManifestDetail = () => import('@/views/manifest/detail.vue')
 const Gate = () => import('@/views/gate/index.vue')
 const Dangerous = () => import('@/views/dangerous/index.vue')
 const Coldchain = () => import('@/views/coldchain/index.vue')
@@ -33,6 +35,8 @@ const router = createRouter({
     { path: '/rtg', name: 'rtg', component: Rtg },
     { path: '/truck', name: 'truck', component: Truck },
     { path: '/container', name: 'container', component: Container },
+    { path: '/manifests', name: 'manifest', component: Manifest },
+    { path: '/manifests/:batchNo', name: 'manifest-detail', component: ManifestDetail },
     { path: '/gate', name: 'gate', component: Gate },
     { path: '/dangerous', name: 'dangerous', component: Dangerous },
     { path: '/coldchain', name: 'coldchain', component: Coldchain },
